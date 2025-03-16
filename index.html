@@ -8,12 +8,17 @@
 </head>
 <body>
 
-    <div class="container">
+    <header>
         <h1>REACTION TIME</h1>
-        <p class="instructions">CLICK WHEN IT TURNS INTO RED OR PRESS SPACEBAR</p>
+    </header>
+
+    <div class="container">
+        <p class="instructions">CLICK THE RED BOX OR PRESS SPACEBAR</p>
         
-        <div id="reaction-box" class="green-box"></div>
+        <div id="reaction-box" class="green-box">WAIT...</div>
         
+        <button id="try-again" class="hidden">TRY AGAIN</button>
+
         <div class="results">
             <h2 id="result-text">AVERAGE: --ms</h2>
             <ul id="history"></ul>
