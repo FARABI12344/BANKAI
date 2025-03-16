@@ -1,12 +1,14 @@
 let startTime;
 let reactionTimes = [];
 let box = document.getElementById("reaction-box");
+let tryAgainBtn = document.getElementById("try-again");
 
 document.addEventListener("keydown", function (event) {
     if (event.code === "Space") handleClick();
 });
 
 box.addEventListener("click", handleClick);
+tryAgainBtn.addEventListener("click", startGame);
 
 function handleClick() {
     if (box.classList.contains("red-box")) {
@@ -15,41 +17,44 @@ function handleClick() {
 
         showResult(reactionTime);
         updateHistory();
-        startGame();
+        tryAgainBtn.classList.remove("hidden");
     }
 }
 
 function startGame() {
     box.classList.remove("red-box");
     box.classList.add("green-box");
-    
-    document.getElementById("result-text").innerText = "WAIT FOR IT...";
-    
-    let randomDelay = Math.floor(Math.random() * 3000) + 2000; // 2 to 5 seconds
+    box.innerText = "WAIT...";
+
+    tryAgainBtn.classList.add("hidden");
+
+    let randomDelay = Math.floor(Math.random() * 3000) + 2000;
 
     setTimeout(() => {
         box.classList.remove("green-box");
         box.classList.add("red-box");
 
         startTime = Date.now();
-        document.getElementById("result-text").innerText = "CLICK NOW!";
+        box.innerText = "CLICK!";
     }, randomDelay);
 }
 
 function showResult(reactionTime) {
-    let resultText = document.getElementById("result-text");
-
-    if (reactionTime < 80) {
-        resultText.innerHTML = `🔥 ${reactionTime}MS → CHEATING`;
-    } else if (reactionTime < 150) {
-        resultText.innerHTML = `⚡ ${reactionTime}MS → ATHLETE [ULTRA PRO]`;
+    let resultStatus;
+    
+    if (reactionTime < 150) {
+        resultStatus = "CHEATER";
     } else if (reactionTime < 200) {
-        resultText.innerHTML = `🎮 ${reactionTime}MS → GAMERS [PRO]`;
+        resultStatus = "ATHLETE [EXTREMELY PRO]";
     } else if (reactionTime < 300) {
-        resultText.innerHTML = `🙂 ${reactionTime}MS → NORMAL [AVERAGE]`;
+        resultStatus = "GAMER [PRO]";
+    } else if (reactionTime < 350) {
+        resultStatus = "AVERAGE [NORMAL]";
     } else {
-        resultText.innerHTML = `🐢 ${reactionTime}MS → NOOB`;
+        resultStatus = "NOOB";
     }
+
+    box.innerHTML = `${reactionTime}ms <br> ${resultStatus}`;
 }
 
 function updateHistory() {
