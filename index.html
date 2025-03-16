@@ -1,17 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>FARABI GAMES</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <div class="container">
     <header class="fade-in">FARABI GAMES</header>
     <button id="play-button" class="fade-in">PLAY</button>
     <div id="game-screen" class="hidden">
-      <div id="word-container"></div>
+      <!-- Drop zones for each letter (the answer area) -->
+      <div id="drop-container" class="drop-container"></div>
+      <!-- Draggable letters (shuffled) -->
+      <div id="draggable-container" class="draggable-container"></div>
       <div id="result"></div>
     </div>
   </div>
