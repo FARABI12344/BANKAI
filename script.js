@@ -1,22 +1,25 @@
 let startTime;
 let reactionTimes = [];
+let box = document.getElementById("reaction-box");
 
-document.getElementById("reaction-box").addEventListener("click", function () {
-    let box = document.getElementById("reaction-box");
+document.addEventListener("keydown", function (event) {
+    if (event.code === "Space") handleClick();
+});
 
+box.addEventListener("click", handleClick);
+
+function handleClick() {
     if (box.classList.contains("red-box")) {
         let reactionTime = Date.now() - startTime;
         reactionTimes.push(reactionTime);
 
         showResult(reactionTime);
         updateHistory();
+        startGame();
     }
-});
-
-document.getElementById("retry-btn").addEventListener("click", startGame);
+}
 
 function startGame() {
-    let box = document.getElementById("reaction-box");
     box.classList.remove("red-box");
     box.classList.add("green-box");
     
@@ -62,5 +65,11 @@ function updateHistory() {
     let avgTime = reactionTimes.reduce((a, b) => a + b, 0) / reactionTimes.length;
     document.getElementById("result-text").innerText = `AVERAGE: ${Math.round(avgTime)}ms`;
 }
+
+document.getElementById("clear-history").addEventListener("click", function () {
+    reactionTimes = [];
+    updateHistory();
+    document.getElementById("result-text").innerText = "AVERAGE: --ms";
+});
 
 startGame();
