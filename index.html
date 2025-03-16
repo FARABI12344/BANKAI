@@ -12,6 +12,7 @@
             <h2>Login</h2>
             <input type="text" id="username" placeholder="Username">
             <button id="login-btn">Submit</button>
+            <button id="owner-btn">I'm Owner</button>
         </div>
     </div>
 
@@ -26,9 +27,12 @@
     <div id="owner-inbox" style="display: none;">
         <div class="inbox-box">
             <h2>Owner Inbox</h2>
-            <div id="inbox-window"></div>
-            <input type="text" id="inbox-input" placeholder="Type your reply...">
-            <button id="reply-btn">Reply</button>
+            <div id="inbox-list"></div>
+            <div id="inbox-chat" style="display: none;">
+                <div id="inbox-window"></div>
+                <input type="text" id="inbox-input" placeholder="Type your reply...">
+                <button id="reply-btn">Reply</button>
+            </div>
         </div>
     </div>
 
