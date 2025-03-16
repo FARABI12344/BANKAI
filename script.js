@@ -1,132 +1,113 @@
-
-let currentUser = localStorage.getItem('username');
-if (currentUser) {
-    if (currentUser === 'owner') {
-        document.getElementById('login-page').style.display = 'none';
-        document.getElementById('owner-inbox').style.display = 'block';
-        loadInbox();
-    } else {
-        document.getElementById('login-page').style.display = 'none';
-        document.getElementById('chat-page').style.display = 'block';
-        loadChat();
+const config = {
+  type: Phaser.AUTO,
+  width: 800,
+  height: 600,
+  physics: {
+    default: 'arcade',
+    arcade: {
+      gravity: { y: 300 },
+      debug: false
     }
+  },
+  scene: {
+    preload: preload,
+    create: create,
+    update: update
+  }
+};
+
+const game = new Phaser.Game(config);
+
+let player;
+let cursors;
+let obstacles;
+let coins;
+let score = 0;
+let scoreText;
+
+function preload() {
+  // Load assets
+  this.load.image('background', 'assets/background.png');
+  this.load.image('ground', 'assets/ground.png');
+  this.load.image('player', 'assets/player.png');
+  this.load.image('obstacle', 'assets/obstacle.png');
+  this.load.image('coin', 'assets/coin.png');
 }
 
-document.getElementById('login-btn').addEventListener('click', function() {
-    const username = document.getElementById('username').value;
-    if (username.length >= 3 && username.length <= 10 && !username.includes(' ')) {
-        localStorage.setItem('username', username);
-        document.getElementById('login-page').style.display = 'none';
-        document.getElementById('chat-page').style.display = 'block';
-        document.getElementById('chat-page').classList.add('fade-in');
-        currentUser = username;
-        loadChat();
-    } else {
-        alert('Username must be 3 to 10 characters long with no spaces.');
-    }
-});
+function create() {
+  // Add background
+  this.add.image(400, 300, 'background');
 
-document.getElementById('owner-btn').addEventListener('click', function() {
-    const password = prompt('Enter owner password:');
-    if (password === 'DeepSeek12$') {
-        localStorage.setItem('username', 'owner');
-        document.getElementById('login-page').style.display = 'none';
-        document.getElementById('owner-inbox').style.display = 'block';
-        document.getElementById('owner-inbox').classList.add('fade-in');
-        loadInbox();
-    } else {
-        alert('Incorrect password.');
-    }
-});
+  // Add ground
+  const ground = this.physics.add.staticGroup();
+  ground.create(400, 568, 'ground').setScale(2).refreshBody();
 
-document.getElementById('send-btn').addEventListener('click', function() {
-    const message = document.getElementById('chat-input').value;
-    if (message) {
-        sendMessage(currentUser, message);
-        document.getElementById('chat-input').value = '';
-    }
-});
+  // Add player
+  player = this.physics.add.sprite(100, 450, 'player');
+  player.setBounce(0.2);
+  player.setCollideWorldBounds(true);
 
-document.getElementById('reply-btn').addEventListener('click', function() {
-    const reply = document.getElementById('inbox-input').value;
-    if (reply) {
-        const userChat = document.querySelector('.user[data-user]').getAttribute('data-user');
-        sendMessage('owner', reply, userChat);
-        document.getElementById('inbox-input').value = '';
-    }
-});
+  // Add obstacles
+  obstacles = this.physics.add.group();
+  createObstacle();
 
-function sendMessage(username, message, recipient = null) {
-    fetch('/send_message', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username: username, message: message, recipient: recipient }),
-    }).then(response => response.json())
-      .then(data => {
-          if (data.status === 'success') {
-              if (username === 'owner') {
-                  loadInboxChat(recipient);
-              } else {
-                  loadChat();
-              }
-          }
-      });
+  // Add coins
+  coins = this.physics.add.group();
+  createCoin();
+
+  // Collisions
+  this.physics.add.collider(player, ground);
+  this.physics.add.collider(player, obstacles, hitObstacle, null, this);
+  this.physics.add.overlap(player, coins, collectCoin, null, this);
+
+  // Input
+  cursors = this.input.keyboard.createCursorKeys();
+
+  // Score
+  scoreText = this.add.text(16, 16, 'Score: 0', {
+    fontSize: '32px',
+    fill: '#fff'
+  });
 }
 
-function loadChat() {
-    fetch(`/get_chat/${currentUser}`)
-        .then(response => response.json())
-        .then(data => {
-            const chatWindow = document.getElementById('chat-window');
-            chatWindow.innerHTML = '';
-            data.messages.forEach(msg => {
-                chatWindow.innerHTML += `<div><strong>${msg.username}:</strong> ${msg.message}</div>`;
-            });
-            chatWindow.scrollTop = chatWindow.scrollHeight;
-        });
+function update() {
+  // Player movement
+  if (cursors.up.isDown && player.body.touching.down) {
+    player.setVelocityY(-330);
+  }
 }
 
-function loadInbox() {
-    fetch('/get_messages')
-        .then(response => response.json())
-        .then(data => {
-            const inboxList = document.getElementById('inbox-list');
-            inboxList.innerHTML = '';
-            data.messages.forEach(msg => {
-                if (msg.recipient === null) {
-                    inboxList.innerHTML += `<div class="user" data-user="${msg.username}">${msg.username}</div>`;
-                }
-            });
-            document.querySelectorAll('.user').forEach(user => {
-                user.addEventListener('click', function() {
-                    document.getElementById('inbox-list').style.display = 'none';
-                    document.getElementById('inbox-chat').style.display = 'block';
-                    const userChat = this.getAttribute('data-user');
-                    loadInboxChat(userChat);
-                });
-            });
-        });
+function createObstacle() {
+  const obstacle = obstacles.create(800, 500, 'obstacle');
+  obstacle.setVelocityX(-200);
+  obstacle.setCollideWorldBounds(false);
+  obstacle.checkWorldBounds = true;
+  obstacle.outOfBoundsKill = true;
+
+  // Spawn new obstacles
+  this.time.delayedCall(1500, createObstacle, [], this);
 }
 
-function loadInboxChat(userChat) {
-    fetch(`/get_chat/${userChat}`)
-        .then(response => response.json())
-        .then(data => {
-            const inboxWindow = document.getElementById('inbox-window');
-            inboxWindow.innerHTML = '';
-            data.messages.forEach(msg => {
-                inboxWindow.innerHTML += `<div><strong>${msg.username}:</strong> ${msg.message}</div>`;
-            });
-            inboxWindow.scrollTop = inboxWindow.scrollHeight;
-        });
+function createCoin() {
+  const coin = coins.create(800, Phaser.Math.Between(100, 500), 'coin');
+  coin.setVelocityX(-200);
+  coin.setCollideWorldBounds(false);
+  coin.checkWorldBounds = true;
+  coin.outOfBoundsKill = true;
+
+  // Spawn new coins
+  this.time.delayedCall(1000, createCoin, [], this);
 }
 
-setInterval(() => {
-    if (currentUser === 'owner') {
-        loadInbox();
-    } else {
-        loadChat();
-    }
-}, 1000);
+function hitObstacle(player, obstacle) {
+  this.physics.pause();
+  player.setTint(0xff0000);
+  player.anims.play('turn');
+  scoreText.setText('Game Over');
+}
+
+function collectCoin(player, coin) {
+  coin.disableBody(true, true);
+  score += 10;
+  scoreText.setText('Score: ' + score);
+}
