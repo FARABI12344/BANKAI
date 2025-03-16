@@ -1,8 +1,14 @@
+@font-face {
+    font-family: 'Panton';
+    src: url('assets/Panton.ttf') format('truetype');
+}
+
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Panton', Arial, sans-serif;
     text-align: center;
     background: #121212;
     color: white;
+    font-size: 24px;
 }
 
 .container {
@@ -10,21 +16,23 @@ body {
 }
 
 h1 {
-    font-size: 2rem;
-    text-shadow: 2px 2px 5px rgba(255, 0, 0, 0.6);
+    font-size: 3rem;
+    text-shadow: 3px 3px 8px rgba(255, 0, 0, 0.6);
 }
 
 .instructions {
     color: red;
+    font-size: 1.5rem;
     font-weight: bold;
 }
 
 .green-box, .red-box {
-    width: 300px;
-    height: 200px;
+    width: 400px;
+    height: 300px;
     margin: 20px auto;
-    border: 10px solid grey;
+    border: 12px solid grey;
     transition: background 0.3s, border-color 0.3s;
+    cursor: pointer;
 }
 
 .green-box {
@@ -38,14 +46,15 @@ h1 {
 }
 
 button {
-    padding: 10px 20px;
-    font-size: 18px;
+    padding: 15px 25px;
+    font-size: 22px;
     border: none;
     background: purple;
     color: white;
     cursor: pointer;
-    border-radius: 5px;
+    border-radius: 10px;
     transition: 0.3s;
+    margin-top: 20px;
 }
 
 button:hover {
@@ -60,9 +69,17 @@ button:hover {
 
 #history li {
     background: rgba(255, 255, 255, 0.1);
-    padding: 5px;
+    padding: 10px;
     margin: 5px auto;
-    width: 200px;
-    border-radius: 5px;
-    font-size: 18px;
+    width: 250px;
+    border-radius: 10px;
+    font-size: 22px;
+}
+
+#clear-history {
+    background: red;
+}
+
+#clear-history:hover {
+    background: darkred;
 }
