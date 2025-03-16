@@ -1,117 +1,136 @@
-/* Import Custom Font */
-@font-face {
-  font-family: 'Panton';
-  src: url('assets/Panton.ttf') format('truetype');
-}
+document.addEventListener('DOMContentLoaded', () => {
+  const playButton = document.getElementById('play-button');
+  const gameScreen = document.getElementById('game-screen');
+  const dropContainer = document.getElementById('drop-container');
+  const draggableContainer = document.getElementById('draggable-container');
+  const resultDisplay = document.getElementById('result');
 
-body {
-  margin: 0;
-  padding: 0;
-  font-family: 'Panton', sans-serif;
-  background-color: #f4f4f4;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-}
+  const words = ["COOK", "GAME", "PLAY", "WORD", "DRAG"];
+  let currentWordIndex = 0;
 
-.container {
-  text-align: center;
-}
+  playButton.addEventListener('click', startGame);
 
-header {
-  font-size: 48px;
-  color: #333;
-}
+  function startGame() {
+    playButton.style.display = 'none';
+    gameScreen.style.display = 'block';
+    loadWord();
+  }
 
-.subheading {
-  font-size: 24px;
-  color: #666;
-  margin-bottom: 20px;
-}
+  function loadWord() {
+    resultDisplay.textContent = "";
+    dropContainer.innerHTML = "";
+    draggableContainer.innerHTML = "";
 
-#play-button {
-  padding: 15px 30px;
-  font-size: 24px;
-  background-color: white;
-  color: #333;
-  border: 2px solid grey;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: transform 0.2s ease, background-color 0.3s, color 0.3s, border-color 0.3s;
-}
+    const word = words[currentWordIndex];
 
-#play-button:hover {
-  background-color: green;
-  color: white;
-  border-color: black;
-  transform: scale(1.1);
-}
+    // Create drop zones
+    for (let i = 0; i < word.length; i++) {
+      const zone = document.createElement('div');
+      zone.classList.add('drop-zone');
+      zone.dataset.index = i;
+      dropContainer.appendChild(zone);
+    }
 
-#game-screen {
-  display: none;
-  margin-top: 20px;
-}
+    // Shuffle and place letters
+    const shuffledLetters = shuffle(word.split(''));
+    shuffledLetters.forEach(letter => {
+      const letterElem = document.createElement('div');
+      letterElem.classList.add('letter');
+      letterElem.textContent = letter;
 
-/* Board container */
-.board {
-  border: 3px solid #333;
-  padding: 10px;
-  margin-bottom: 20px;
-}
+      const containerRect = draggableContainer.getBoundingClientRect();
+      letterElem.style.left = Math.random() * (containerRect.width - 60) + 'px';
+      letterElem.style.top = Math.random() * (containerRect.height - 60) + 'px';
 
-/* Drop zones (where letters should go) */
-.drop-container {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-}
+      draggableContainer.appendChild(letterElem);
+      makeDraggable(letterElem);
+    });
+  }
 
-.drop-zone {
-  width: 60px;
-  height: 60px;
-  border: 2px dashed #333;
-  border-radius: 5px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: #fff;
-}
+  function makeDraggable(elem) {
+    let offsetX, offsetY, isDragging = false;
+    let originalPos = { 
+      x: parseFloat(elem.style.left), 
+      y: parseFloat(elem.style.top) 
+    };
 
-/* Draggable letters container */
-.draggable-container {
-  position: relative;
-  width: 100%;
-  height: 150px;
-  border: 2px dashed #999;
-  border-radius: 10px;
-  margin-bottom: 20px;
-}
+    elem.addEventListener('mousedown', (e) => {
+      isDragging = true;
+      const rect = elem.getBoundingClientRect();
+      offsetX = e.clientX - rect.left;
+      offsetY = e.clientY - rect.top;
+      elem.style.zIndex = 1000;
+      elem.style.transition = 'none';
+      e.preventDefault();
+    });
 
-/* Draggable letters */
-.letter {
-  width: 60px;
-  height: 60px;
-  background-color: #007bff;
-  color: white;
-  font-size: 32px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 5px;
-  cursor: grab;
-  user-select: none;
-  position: absolute;
-  transition: left 0.5s ease-out, top 0.5s ease-out;
-}
+    document.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      elem.style.left = (e.clientX - offsetX) + 'px';
+      elem.style.top = (e.clientY - offsetY) + 'px';
+    });
 
-.letter:active {
-  cursor: grabbing;
-  transform: scale(1.1);
-}
+    document.addEventListener('mouseup', (e) => {
+      if (!isDragging) return;
+      isDragging = false;
+      elem.style.transition = 'left 0.5s ease-out, top 0.5s ease-out';
+      let dropped = false;
 
-#result {
-  font-size: 24px;
-  color: #333;
-}
+      document.querySelectorAll('.drop-zone').forEach(zone => {
+        const rect = zone.getBoundingClientRect();
+        if (
+          e.clientX >= rect.left && e.clientX <= rect.right &&
+          e.clientY >= rect.top && e.clientY <= rect.bottom
+        ) {
+          if (zone.children.length === 0) {
+            zone.appendChild(elem);
+            elem.style.position = 'relative';
+            elem.style.left = '0';
+            elem.style.top = '0';
+            dropped = true;
+          }
+        }
+      });
+
+      if (!dropped) {
+        if (elem.parentElement !== draggableContainer) {
+          draggableContainer.appendChild(elem);
+        }
+        elem.style.position = 'absolute';
+        elem.style.left = originalPos.x + 'px';
+        elem.style.top = originalPos.y + 'px';
+      }
+
+      elem.style.zIndex = 1;
+      checkWord();
+    });
+  }
+
+  function checkWord() {
+    const zones = document.querySelectorAll('.drop-zone');
+    let assembled = "";
+    let allFilled = true;
+
+    zones.forEach(zone => {
+      if (zone.children.length > 0) {
+        assembled += zone.children[0].textContent;
+      } else {
+        allFilled = false;
+      }
+    });
+
+    if (allFilled) {
+      if (assembled === words[currentWordIndex]) {
+        resultDisplay.textContent = "You win!";
+      } else {
+        resultDisplay.textContent = "Try again!";
+      }
+      currentWordIndex = (currentWordIndex + 1) % words.length;
+      setTimeout(loadWord, 2000);
+    }
+  }
+
+  function shuffle(array) {
+    return array.sort(() => Math.random() - 0.5);
+  }
+});
