@@ -1,1 +1,77 @@
+body {
+    background-color: #2c3e50;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
 
+.login-box, .chat-box, .inbox-box {
+    background-color: #34495e;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    color: white;
+    text-align: center;
+    width: 500px;
+}
+
+input {
+    padding: 20px;
+    margin: 20px 0;
+    border: none;
+    border-radius: 10px;
+    width: 90%;
+}
+
+input:focus {
+    outline: none;
+    box-shadow: 0 0 20px #9b59b6;
+}
+
+button {
+    padding: 20px 40px;
+    border: none;
+    border-radius: 10px;
+    background-color: #9b59b6;
+    color: white;
+    cursor: pointer;
+    margin: 15px;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+button:hover {
+    background-color: #8e44ad;
+    transform: scale(1.1);
+}
+
+#chat-window, #inbox-window {
+    height: 400px;
+    overflow-y: scroll;
+    border: 1px solid #555;
+    padding: 20px;
+    margin-bottom: 20px;
+    background-color: #2c3e50;
+    border-radius: 10px;
+}
+
+#inbox-list {
+    height: 300px;
+    overflow-y: scroll;
+    border: 1px solid #555;
+    padding: 20px;
+    margin-bottom: 20px;
+    background-color: #2c3e50;
+    border-radius: 10px;
+}
+
+.fade-in {
+    animation: fadeIn 0.5s;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
