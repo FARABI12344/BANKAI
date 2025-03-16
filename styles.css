@@ -8,31 +8,42 @@ body {
     text-align: center;
     background: #121212;
     color: white;
-    font-size: 24px;
+    font-size: 20px;
+    margin: 0;
+}
+
+header h1 {
+    font-size: 2.5rem;
+    margin: 20px 0;
 }
 
 .container {
-    margin-top: 50px;
-}
-
-h1 {
-    font-size: 3rem;
-    text-shadow: 3px 3px 8px rgba(255, 0, 0, 0.6);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
 }
 
 .instructions {
     color: red;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     font-weight: bold;
 }
 
 .green-box, .red-box {
-    width: 400px;
-    height: 300px;
+    width: 80%;
+    max-width: 400px;
+    height: 250px;
     margin: 20px auto;
-    border: 12px solid grey;
+    border: 8px solid grey;
     transition: background 0.3s, border-color 0.3s;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: bold;
 }
 
 .green-box {
@@ -46,15 +57,15 @@ h1 {
 }
 
 button {
-    padding: 15px 25px;
-    font-size: 22px;
+    padding: 12px 20px;
+    font-size: 18px;
     border: none;
     background: purple;
     color: white;
     cursor: pointer;
-    border-radius: 10px;
+    border-radius: 8px;
     transition: 0.3s;
-    margin-top: 20px;
+    margin-top: 15px;
 }
 
 button:hover {
@@ -62,18 +73,12 @@ button:hover {
     transform: scale(1.1);
 }
 
-#history {
-    list-style: none;
-    padding: 0;
+#try-again {
+    background: blue;
 }
 
-#history li {
-    background: rgba(255, 255, 255, 0.1);
-    padding: 10px;
-    margin: 5px auto;
-    width: 250px;
-    border-radius: 10px;
-    font-size: 22px;
+#try-again:hover {
+    background: lightblue;
 }
 
 #clear-history {
@@ -82,4 +87,36 @@ button:hover {
 
 #clear-history:hover {
     background: darkred;
+}
+
+.hidden {
+    display: none;
+}
+
+#history {
+    list-style: none;
+    padding: 0;
+    width: 100%;
+    max-width: 300px;
+    margin: auto;
+}
+
+#history li {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 10px;
+    margin: 5px auto;
+    border-radius: 10px;
+    font-size: 18px;
+}
+
+@media (max-width: 600px) {
+    .green-box, .red-box {
+        width: 90%;
+        height: 200px;
+        font-size: 1.5rem;
+    }
+
+    header h1 {
+        font-size: 2rem;
+    }
 }
