@@ -109,6 +109,13 @@ button:hover {
     font-size: 18px;
 }
 
+/* Ad container */
+.ad-container {
+    margin-top: 20px;
+    text-align: center;
+    width: 100%;
+}
+
 @media (max-width: 600px) {
     .green-box, .red-box {
         width: 90%;
