@@ -6,12 +6,20 @@
     <title>Reaction Time Tester</title>
     <link rel="stylesheet" href="styles.css">
 
-    <!-- Google AdSense Verification -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2686435733813463"
-        crossorigin="anonymous"></script>
-    
-    <!-- Meta Tag Verification (if needed) -->
-    <meta name="google-site-verification" content="YOUR_VERIFICATION_CODE_HERE">
+    <!-- Google AdSense CMP Script for Consent -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2686435733813463" crossorigin="anonymous"></script>
+    <meta name="google-adsense-account" content="ca-pub-2686435733813463">
+    <script async src="https://fundingchoicesmessages.google.com/i/pub-2686435733813463?ers=1"></script>
+
+    <!-- Google CMP Setup (Manages cookies consent) -->
+    <script>
+      (function() {
+        window.__fundingChoices = window.__fundingChoices || [];
+        window.__fundingChoices.push(function() {
+          window.__fundingChoices.ui();
+        });
+      })();
+    </script>
 </head>
 <body>
 
@@ -32,19 +40,6 @@
         </div>
 
         <button id="clear-history">DELETE HISTORY</button>
-
-        <!-- Google AdSense Ad Placement -->
-        <div class="ad-container">
-            <ins class="adsbygoogle"
-                style="display:block"
-                data-ad-client="ca-pub-2686435733813463"
-                data-ad-slot="YOUR_AD_SLOT_ID"
-                data-ad-format="auto"
-                data-full-width-responsive="true"></ins>
-            <script>
-                (adsbygoogle = window.adsbygoogle || []).push({});
-            </script>
-        </div>
     </div>
 
     <script src="script.js"></script>
